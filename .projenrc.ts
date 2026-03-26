@@ -25,8 +25,8 @@ const project = new awscdk.AwsCdkConstructLibrary({
   projenrcTs: true,
   packageManager: NodePackageManager.NPM,
   npmAccess: NpmAccess.RESTRICTED,
-  npmRegistryUrl: 'https://npm.pkg.github.com',
-  npmTokenSecret: 'NPM_TOKEN',
+  npmRegistryUrl: "https://npm.pkg.github.com",
+  npmTokenSecret: "NPM_TOKEN",
   depsUpgrade: true,
   depsUpgradeOptions: {
     workflow: true,

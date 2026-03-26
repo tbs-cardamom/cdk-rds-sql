@@ -92,7 +92,7 @@ export interface RdsSqlProps {
 
   /**
    * Flag to determine CI environment.
-   * 
+   *
    * @default - false
    */
   readonly ci?: boolean
@@ -339,9 +339,7 @@ export class Provider extends Construct implements IProvider {
             return []
           },
         },
-        ...(isCI
-          ? { bundlingFileAccess: BundlingFileAccess.VOLUME_COPY }
-          : {}),
+        ...(isCI ? { bundlingFileAccess: BundlingFileAccess.VOLUME_COPY } : {}),
       },
       environment,
       initialPolicy: [
