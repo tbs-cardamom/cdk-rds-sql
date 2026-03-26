@@ -163,7 +163,7 @@ const releaseWorkflow = project.github?.tryFindWorkflow("release")
 if (releaseWorkflow?.file) {
   // Target the Release step's environment variables specifically
   releaseWorkflow.file.addOverride("jobs.release_npm.steps.9.env", {
-    NPM_TRUSTED_PUBLISHER: "true",
+    // NPM_TRUSTED_PUBLISHER: "true",
     // NPM_TOKEN: "NPM_TOKEN",
   })
 }
