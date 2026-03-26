@@ -96,7 +96,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
     "testcontainers@11",
   ],
   keywords: ["aws", "aws-cdk", "rds", "aurora", "postgres", "mysql", "dsql"],
-  minMajorVersion: 1,
+  minMajorVersion: 0,
 })
 if (project.eslint) {
   project.eslint.addRules({
@@ -164,7 +164,7 @@ if (releaseWorkflow?.file) {
   // Target the Release step's environment variables specifically
   releaseWorkflow.file.addOverride("jobs.release_npm.steps.9.env", {
     NPM_TRUSTED_PUBLISHER: "true",
-    NPM_TOKEN: undefined,
+    // NPM_TOKEN: "NPM_TOKEN",
   })
 }
 
