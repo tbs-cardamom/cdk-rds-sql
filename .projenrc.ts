@@ -1,5 +1,5 @@
 import { awscdk, github } from "projen"
-import { NodePackageManager } from "projen/lib/javascript"
+import { NodePackageManager, NpmAccess } from "projen/lib/javascript"
 
 const tmpDirectories = [
   "cdk.context.json",
@@ -17,13 +17,16 @@ const project = new awscdk.AwsCdkConstructLibrary({
   author: "Berend de Boer",
   authorAddress: "berend@pobox.com",
   authorEmail: "berend@pobox.com",
-  name: "cdk-rds-sql",
+  name: "@tbs-cardamom/cdk-rds-sql",
   description:
     "A CDK construct that allows creating roles or users and databases on Aurora Serverless PostgreSQL or MySQL/MariaDB clusters, as well as AWS DSQL clusters.",
   defaultReleaseBranch: "main",
-  repositoryUrl: "https://github.com/berenddeboer/cdk-rds-sql.git",
+  repositoryUrl: "https://github.com/tbs-cardamom/cdk-rds-sql.git",
   projenrcTs: true,
   packageManager: NodePackageManager.NPM,
+  npmAccess: NpmAccess.RESTRICTED,
+  npmRegistryUrl: 'https://npm.pkg.github.com',
+  npmTokenSecret: 'NPM_TOKEN',
   depsUpgrade: true,
   depsUpgradeOptions: {
     workflow: true,

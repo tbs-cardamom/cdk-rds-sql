@@ -1,6 +1,6 @@
 import { existsSync } from "fs"
 import * as path from "path"
-import { Duration, Stack } from "aws-cdk-lib"
+import { Duration, Stack, BundlingFileAccess } from "aws-cdk-lib"
 import * as dsql from "aws-cdk-lib/aws-dsql"
 import { IVpc, SubnetType, SubnetSelection } from "aws-cdk-lib/aws-ec2"
 import * as iam from "aws-cdk-lib/aws-iam"
@@ -89,6 +89,13 @@ export interface RdsSqlProps {
    * @default - true
    */
   readonly ssl?: boolean
+
+  /**
+   * Flag to determine CI environment.
+   * 
+   * @default - false
+   */
+  readonly ci?: boolean
 }
 
 /**
@@ -298,6 +305,8 @@ export class Provider extends Construct implements IProvider {
       },
     })
 
+    const isCI = props.ci || false
+
     const fn = new lambda.NodejsFunction(scope, id, {
       ...props.functionProps,
       // Only configure VPC for traditional RDS
@@ -330,6 +339,9 @@ export class Provider extends Construct implements IProvider {
             return []
           },
         },
+        ...(isCI
+          ? { bundlingFileAccess: BundlingFileAccess.VOLUME_COPY }
+          : {}),
       },
       environment,
       initialPolicy: [
