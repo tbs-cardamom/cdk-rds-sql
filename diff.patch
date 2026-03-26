@@ -1,0 +1,70 @@
+diff --git a/.projenrc.ts b/.projenrc.ts
+index 0bd0c7d..58a5c48 100644
+--- a/.projenrc.ts
++++ b/.projenrc.ts
+@@ -1,5 +1,5 @@
+ import { awscdk, github } from "projen"
+-import { NodePackageManager } from "projen/lib/javascript"
++import { NodePackageManager, NpmAccess } from "projen/lib/javascript"
+ 
+ const tmpDirectories = [
+   "cdk.context.json",
+@@ -21,9 +21,12 @@ const project = new awscdk.AwsCdkConstructLibrary({
+   description:
+     "A CDK construct that allows creating roles or users and databases on Aurora Serverless PostgreSQL or MySQL/MariaDB clusters, as well as AWS DSQL clusters.",
+   defaultReleaseBranch: "main",
+-  repositoryUrl: "https://github.com/berenddeboer/cdk-rds-sql.git",
++  repositoryUrl: "https://github.com/tbs-cardamom/cdk-rds-sql.git",
+   projenrcTs: true,
+   packageManager: NodePackageManager.NPM,
++  npmAccess: NpmAccess.RESTRICTED,
++  npmRegistryUrl: 'https://npm.pkg.github.com',
++  npmTokenSecret: 'NPM_TOKEN',
+   depsUpgrade: true,
+   depsUpgradeOptions: {
+     workflow: true,
+diff --git a/src/provider.ts b/src/provider.ts
+index 2cf5675..1d3a3e7 100644
+--- a/src/provider.ts
++++ b/src/provider.ts
+@@ -1,6 +1,6 @@
+ import { existsSync } from "fs"
+ import * as path from "path"
+-import { Duration, Stack } from "aws-cdk-lib"
++import { Duration, Stack, BundlingFileAccess } from "aws-cdk-lib"
+ import * as dsql from "aws-cdk-lib/aws-dsql"
+ import { IVpc, SubnetType, SubnetSelection } from "aws-cdk-lib/aws-ec2"
+ import * as iam from "aws-cdk-lib/aws-iam"
+@@ -89,6 +89,13 @@ export interface RdsSqlProps {
+    * @default - true
+    */
+   readonly ssl?: boolean
++
++  /**
++   * Flag to determine CI environment.
++   * 
++   * @default - false
++   */
++  readonly ci?: boolean
+ }
+ 
+ /**
+@@ -298,6 +305,8 @@ export class Provider extends Construct implements IProvider {
+       },
+     })
+ 
++    const isCI = props.ci || false
++
+     const fn = new lambda.NodejsFunction(scope, id, {
+       ...props.functionProps,
+       // Only configure VPC for traditional RDS
+@@ -330,6 +339,9 @@ export class Provider extends Construct implements IProvider {
+             return []
+           },
+         },
++        ...(isCI
++          ? { bundlingFileAccess: BundlingFileAccess.VOLUME_COPY }
++          : {}),
+       },
+       environment,
+       initialPolicy: [
